@@ -1,0 +1,5 @@
+node_modules
+dist
+.git
+.pre-commit-config.yaml
+README.md
