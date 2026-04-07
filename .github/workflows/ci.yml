@@ -53,11 +53,16 @@ jobs:
 
           git clone git@github.com:ShalevNatan/k3s-gitops.git /tmp/k3s-gitops
           cd /tmp/k3s-gitops
-          sed -i "s|shalevnatan6/nadland-frontend:.*|shalevnatan6/nadland-frontend:${{ github.sha }}|g" \
+          sed -i "s|newTag:.*|newTag: ${{ github.sha }}|g" \
             apps/frontend-prod/overlays/prod/kustomization.yaml
 
           git config user.email "github-actions@nadland.com"
           git config user.name "GitHub Actions"
           git add apps/frontend-prod/overlays/prod/kustomization.yaml
-          git commit -m "ci: update frontend image to ${{ github.sha }}"
-          git push
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "ci: update frontend image to ${{ github.sha }}"
+            git push
+          fi
